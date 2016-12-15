@@ -2,8 +2,8 @@ source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+# Use postrgresql as the database for Active Record
+gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -21,6 +21,7 @@ gem 'puma', '~> 3.0'
 
 # Operations + representer
 gem 'trailblazer-rails'
+gem 'reform-rails'
 
 # Response serializer
 gem 'active_model_serializers'
@@ -40,6 +41,7 @@ group :development, :test do
   gem 'spring-commands-rspec'
   gem 'vcr'
   gem 'webmock'
+  gem 'faker'
 
   # DB table annotation
   gem 'annotate'

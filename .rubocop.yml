@@ -7,3 +7,9 @@ AllCops:
   Exclude:
     - db/schema.rb
     - Gemfile
+Style/Documentation:
+  Enabled: false
+Metrics/LineLength:
+  Max: 130
+Style/LambdaCall:
+  Enabled: false

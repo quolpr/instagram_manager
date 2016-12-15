@@ -12,11 +12,20 @@
 
 ActiveRecord::Schema.define(version: 20161214184527) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "users", force: :cascade do |t|
     t.string   "instagram_token"
+    t.string   "instagram_id"
     t.string   "username"
+    t.string   "full_name"
+    t.string   "profile_picture"
+    t.string   "bio"
+    t.string   "website"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.index ["instagram_id"], name: "index_users_on_instagram_id", using: :btree
   end
 
 end

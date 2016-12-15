@@ -115,4 +115,6 @@ RSpec.configure do |config|
       FileUtils.rm_rf(Dir["#{Rails.root}/spec/support/uploads"])
     end
   end
+
+  config.include FactoryGirl::Syntax::Methods
 end
