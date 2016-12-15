@@ -1,4 +1,4 @@
-class SessionsController < ApplicationControlle
+class SessionsController < ApplicationController
   def new
     redirect_to Instagram.authorize_url(
       redirect_uri: ENV['CALLBACK_URL']
@@ -7,8 +7,8 @@ class SessionsController < ApplicationControlle
 
   def create
     run Session::Create do |op|
-      return render json: op.model
+      return render json: op.model, include: 'user'
     end
-    redirect_to root_path
+    render status: :unauthorized
   end
 end
