@@ -1,89 +1,117 @@
 require 'rails_helper'
 
 RSpec.describe Session::Create do
-  subject { described_class.(code: code) }
+  subject(:operation) { described_class.new(code: code) }
   let(:code) { 123 }
 
-  let(:token_response) do
-    { 'access_token' => 'token',
-      'user' =>
-      { 'username' => 'serega_bro_popov',
-        'bio' => '',
-        'website' => '',
-        'profile_picture' => '',
-        'full_name' => '',
-        'id' => '51293183' } }
+  describe '#user_params_by_code' do
+    subject { operation.user_params_by_code(code) }
+
+    before do
+      allow(Instagram).to receive(:get_access_token).and_return(token_response)
+    end
+
+    let(:code) { '123' }
+    let(:token_response) do
+      { 'access_token' => 'token',
+        'user' =>
+        { 'username' => 'serega_bro_popov',
+          'bio' => 'test1',
+          'website' => 'test2',
+          'profile_picture' => 'test3',
+          'full_name' => 'test4',
+          'id' => '51293183' } }
+    end
+
+    it 'requests access token' do
+      expect(Instagram).to receive(:get_access_token).with(
+        code, redirect_uri: ENV['CALLBACK_URL']
+      )
+      subject
+    end
+
+    it 'returns normalized user params' do
+      is_expected.to eq(
+        'instagram_id' => '51293183',
+        'instagram_token' => 'token',
+        'username' => 'serega_bro_popov',
+        'bio' => 'test1',
+        'website' => 'test2',
+        'profile_picture' => 'test3',
+        'full_name' => 'test4'
+      )
+    end
   end
 
-  it 'gets access token based on code' do
-    expect(Instagram).to receive(:get_access_token).with(
-      code, redirect_uri: ENV['CALLBACK_URL']
-    ).and_return(token_response)
-    subject
-  end
+  describe '#find_or_create_user' do
+    subject { operation.find_or_create_user(user_params) }
+    let(:user_params) { attributes_for(:user) }
 
-  describe '#self.update_or_create_user' do
-    subject { described_class.new.update_or_create_user(token_response) }
-    let(:user) { create :user, instagram_id: exists_instagram_id }
-    let(:exists_instagram_id) { '51293183' }
+    context 'when user with such instagram id exists' do
+      let!(:user) { create :user, instagram_id: user_params['instagram_id'] }
 
-    context 'when user with such instagram exists' do
       it 'returns user' do
-
+        is_expected.to eq user
       end
     end
-    context 'when user with such instagram not exists' do
-      let(:exists_instagram_id) { '123' }
 
+    context 'when user with such instagram id not exists' do
       it 'creates new user' do
-        expect(User::Create).to receive(:call).with(
-          user: token_response['user'].merge('instagram_token' => 'token')
-        ).and_return(user_create_result)
-        subject
+        expect { subject }.to change { User.count }.by(1)
       end
-      it 'returns user'
+
+      it 'returns new user' do
+        is_expected.to be_a User
+      end
     end
   end
 
-  describe '#proccess' do
+  describe '#build_session' do
+    subject { operation.build_session(user) }
+    let(:user) { double(id: 1) }
 
-  end
-
-  describe 'user authorizing' do
-    before { allow(Instagram).to receive(:get_access_token).and_return(token_response) }
-    context 'when instagram user exists' do
-
-      it 'encodes JWT token' do
-        expect(JwtService).to receive(:encode).with(
-          user_id: user.id
-        ).and_return('test')
-        expect(subject.model).to eq 'test'
-      end
+    it 'creates new token' do
+      expect(JwtService).to receive(:encode).with(
+        user_id: user.id
+      )
+      subject
     end
 
-    context 'when instagram user not exists' do
-      let(:user_create_result) { double(model: new_user) }
-      let(:new_user) { build :user, id: 1 }
-      let(:exists_instagram_id) { '123' }
+    it 'returns session object' do
+      allow(JwtService).to receive(:encode).and_return('test')
+      expect(subject.attributes).to eq(
+        user: user, access_token: 'test'
+      )
+    end
+  end
 
-      it 'creates new user' do
-        expect(User::Create).to receive(:call).with(
-          user: token_response['user'].merge('instagram_token' => 'token')
-        ).and_return(user_create_result)
-        subject
-      end
+  describe '#process' do
+    subject { operation.run.last }
+    before do
+      allow(operation).to receive(:user_params_by_code).and_return({})
+      allow(operation).to receive(:find_or_create_user).and_return(user)
+      allow(operation).to receive(:build_session).and_return(session)
+    end
+    let(:user) { User.new }
+    let(:session) { Session.new }
 
-      it 'encodes JWT token' do
-        allow(User::Create).to receive(:call).and_return(user_create_result)
-        expect(JwtService).to receive(:encode).with(
-          user_id: new_user.id
-        ).and_return('test')
-        subject
-      end
+    it 'gets user params' do
+      expect(operation).to receive(:user_params_by_code).with(code)
+      subject
+    end
 
-      it 'returns session object' do
-        allow(User::Create).to receive(:call).and_return(user_create_result)
-      end
+    it 'find or create user by user params' do
+      expect(operation).to receive(:find_or_create_user).with({})
+      subject
+    end
+
+    it 'builds session' do
+      expect(operation).to receive(:build_session).with(user)
+      subject
+    end
+
+    it 'sets models as sessions' do
+      expect(subject.model).to eq session
     end
   end
 end

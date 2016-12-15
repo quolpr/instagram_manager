@@ -1,4 +1,6 @@
 inherit_from: .rubocop_todo.yml
+Rails:
+  Enabled: true
 AllCops:
   Include:
     - Rakefile
@@ -6,10 +8,16 @@ AllCops:
     - lib/**/*.rake
   Exclude:
     - db/schema.rb
+    - db/migrate/*
+    - db/seeds.rb
     - Gemfile
+    - Guardfile
+    - 'vendor/**/*'
 Style/Documentation:
   Enabled: false
 Metrics/LineLength:
   Max: 130
 Style/LambdaCall:
+  Enabled: false
+Style/ClassAndModuleChildren:
   Enabled: false

@@ -20,6 +20,9 @@ default: &default
   # For details on connection pooling, see rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: localhost
+  username: <%= ENV['DB_USERNAME'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
 
 development:
   <<: *default
@@ -82,4 +85,4 @@ production:
   <<: *default
   database: instagram_statistic_production
   username: instagram_statistic
-  password: <%= ENV['INSTAFOOD_DATABASE_PASSWORD'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
