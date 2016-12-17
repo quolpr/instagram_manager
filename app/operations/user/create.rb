@@ -1,9 +1,9 @@
 require 'reform/form/validation/unique_validator'
 
 class User::Create < Trailblazer::Operation
-  include Model
-  model User, :create
-
+  #include Model
+  #model User, :create
+=begin
   contract do
     property :instagram_token, validates: { presence: true }
     property :instagram_id, validates: { presence: true, unique: true }
@@ -19,4 +19,5 @@ class User::Create < Trailblazer::Operation
       contract.save
     end
   end
+=end
 end

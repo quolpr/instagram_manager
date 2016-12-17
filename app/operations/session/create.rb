@@ -1,31 +1,34 @@
 class Session::Create < Trailblazer::Operation
-  def process(params)
-    user_params = user_params_by_code(params[:code])
-    user = find_or_create_user(user_params)
-    @model = build_session(user)
-  end
+  step :user_params_by_code
+  step :find_or_create_user
+  step :build_session
 
-  def user_params_by_code(code)
+  def user_params_by_code(options)
     response = Instagram.get_access_token(
-      code, redirect_uri: ENV['CALLBACK_URL']
+      options['code'], redirect_uri: ENV['CALLBACK_URL']
     )
-    response['user'].merge(
+    options['user_params'] = response['user'].merge(
       'instagram_token' => response['access_token']
     ).tap do |user_params|
       user_params['instagram_id'] = user_params.delete('id')
     end
+    options
   end
 
-  def find_or_create_user(user_params)
-    User.find_by(instagram_id: user_params['instagram_id']) || begin
-      User::Create.(user: user_params).model
+  def find_or_create_user(options)
+    options['user'] = User.find_by(
+      instagram_id: options['user_params']['instagram_id']
+    ) || begin
+      User::Create.(user: options['user_params'])['model']
     end
+    options
   end
 
-  def build_session(user)
-    Session.new(
-      user: user,
-      access_token: JwtService.encode(user_id: user.id)
+  def build_session(options)
+    options['model'] = Session.new(
+      user: options['user'],
+      access_token: JwtService.encode(user_id: options['user'].id)
     )
+    options
   end
 end

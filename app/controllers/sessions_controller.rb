@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
 
   def create
     run Session::Create do |op|
-      return render json: op.model, include: 'user'
+      return render json: op['model'], include: 'user'
     end
     render status: :unauthorized
   end
