@@ -19,8 +19,9 @@ gem 'puma', '~> 3.0'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
-# Operations + representer
-gem 'trailblazer-rails'
+# Operations
+gem 'trailblazer'
+gem 'trailblazer-loader'
 gem 'reform-rails'
 
 # Response serializer
@@ -42,6 +43,7 @@ group :development, :test do
   gem 'vcr'
   gem 'webmock'
   gem 'faker'
+  gem 'shoulda-matchers'
 
   # DB table annotation
   gem 'annotate'

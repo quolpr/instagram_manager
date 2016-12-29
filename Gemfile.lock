@@ -192,6 +192,8 @@ GEM
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.8.1)
     safe_yaml (1.0.4)
+    shoulda-matchers (3.1.1)
+      activesupport (>= 4.0.0)
     spring (2.0.0)
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
@@ -218,10 +220,6 @@ GEM
       declarative
       pipetree (>= 0.0.5, < 0.1.0)
       uber (>= 0.1.0, < 0.2.0)
-    trailblazer-rails (1.0.0)
-      reform-rails (>= 0.1.4, < 0.2.0)
-      trailblazer (>= 2.0.0.beta1, < 2.1.0)
-      trailblazer-loader (>= 0.1.0)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uber (0.1.0)
@@ -255,10 +253,12 @@ DEPENDENCIES
   reform-rails
   rspec-rails
   rubocop
+  shoulda-matchers
   spring
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)
-  trailblazer-rails
+  trailblazer
+  trailblazer-loader
   tzinfo-data
   vcr
   webmock

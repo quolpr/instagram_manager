@@ -15,4 +15,5 @@
 #
 
 class User < ApplicationRecord
+  has_one :instagram_account
 end
