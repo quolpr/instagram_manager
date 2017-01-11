@@ -6,13 +6,8 @@ class SessionsController < ApplicationController
   end
 
   def create
-    result = Session::Operation::Create.(params)
-    if result.success?
-      return render json: result['model'],
-                    include: 'user',
-                    serializer: SessionSerializer
-    else
-      render status: :unauthorized
-    end
+    render json: Session::Create.run(params[:code]),
+           include: 'user,user.instagram_account',
+           serializer: SessionSerializer
   end
 end

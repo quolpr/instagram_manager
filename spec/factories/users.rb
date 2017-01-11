@@ -16,5 +16,6 @@
 
 FactoryGirl.define do
   factory :user do
+    instagram_account { build :instagram_account }
   end
 end

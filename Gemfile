@@ -9,7 +9,7 @@ gem 'puma', '~> 3.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 3.0'
+gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -19,17 +19,18 @@ gem 'puma', '~> 3.0'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
-# Operations
-gem 'trailblazer'
-gem 'trailblazer-loader'
-gem 'reform-rails'
-
 # Response serializer
 gem 'active_model_serializers'
 
 # Instgram oauth + api
 gem 'instagram'
 gem 'oauth2'
+
+# Authorization system
+gem 'pundit'
+
+# Background jobs
+gem 'sidekiq'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
