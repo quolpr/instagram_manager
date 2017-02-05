@@ -10,10 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161218084839) do
+ActiveRecord::Schema.define(version: 20170118212357) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "instagram_account_media_objects", force: :cascade do |t|
+    t.integer  "instagram_account_id"
+    t.string   "link"
+    t.string   "media_url"
+    t.jsonb    "tags"
+    t.datetime "created_time"
+    t.string   "caption"
+    t.string   "media_type"
+    t.string   "instagram_id"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.index ["instagram_account_id"], name: "index_instagram_account_media_objects_on_instagram_account_id", using: :btree
+    t.index ["instagram_id"], name: "index_instagram_account_media_objects_on_instagram_id", unique: true, using: :btree
+  end
 
   create_table "instagram_accounts", force: :cascade do |t|
     t.string   "token"
@@ -43,5 +58,6 @@ ActiveRecord::Schema.define(version: 20161218084839) do
     t.index ["instagram_id"], name: "index_users_on_instagram_id", using: :btree
   end
 
+  add_foreign_key "instagram_account_media_objects", "instagram_accounts"
   add_foreign_key "instagram_accounts", "users"
 end

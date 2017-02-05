@@ -22,3 +22,7 @@ Style/LambdaCall:
   Enabled: false
 Style/ClassAndModuleChildren:
   Enabled: false
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*.rb"
+    - "config/initializers/*.rb"

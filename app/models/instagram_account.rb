@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: instagram_accounts
@@ -17,4 +18,5 @@
 
 class InstagramAccount < ApplicationRecord
   belongs_to :user, optional: true
+  has_many :media_objects
 end

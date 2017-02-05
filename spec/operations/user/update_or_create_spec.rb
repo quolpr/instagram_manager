@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 RSpec.describe User::UpdateOrCreate do
@@ -45,10 +46,19 @@ RSpec.describe User::UpdateOrCreate do
       it 'creates account' do
         expect { subject }.to change { InstagramAccount.count }.to(1)
       end
+
+      it 'parse recent media works' do
+        expect(RecentMediaWorker).to receive(:perform_async).with(kind_of(Numeric))
+        subject
+      end
     end
 
     it 'creates new user' do
       expect { subject }.to change { User.count }.to(1)
     end
+  end
+
+  it 'returns user' do
+    expect(subject).to be_a User
   end
 end
